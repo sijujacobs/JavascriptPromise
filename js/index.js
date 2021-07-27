@@ -1,48 +1,45 @@
 (() => {
+	console.clear();
 	let fetchButton = document.getElementById('fetchButton');
 	let fetchAllButton = document.getElementById('fetchAllButton');
 	fetchButton.addEventListener('click', fetchButtonClickHandler);
 	fetchAllButton.addEventListener('click', fetchAllButtonlickHandler);
+	const userURL = "https://jsonplaceholder.typicode.com/users";
+	const albumURL = "https://jsonplaceholder.typicode.com/albums";
+	const peopleURL = "https://ghibliapi.herokuapp.com/people";
+	const errorURL = "https://ghibliapi.herokuapp.com/peoxple";
 
-	const fetchPeople = () => {
-		return fetch("https://ghibliapi.herokuapp.com/people")
+	const fetchData = (apiURL) => {
+		let apiResponse = {
+			statusCode: '',
+			data: '',
+			message: '',
+			apiName: apiURL.substr(apiURL.lastIndexOf('/')),
+		}
+		return fetch(apiURL)
 			.then(response => {
-				if (!response.ok) {
-					throw Error(response.statusText);
+				apiResponse.statusCode = response.status;
+				if (response.ok) {
+					apiResponse.message = 'OK';
+					return response.json();
+				} else {
+					apiResponse.message = 'ERROR';
 				}
-				return response.json();
 			})
-			.catch(err => console.error('ERROR :: fetchPeople', err));
-	}
-
-	function getUsers() {
-		return fetch("https://jsonplaceholder.typicode.com/users")
 			.then(response => {
-				if (!response.ok) {
-					throw Error(response.statusText);
-				}
-				return response.json();
+				apiResponse.data = response;
+				return apiResponse;
 			})
-			.catch(err => console.error('ERROR :: fetchPeople', err));
-	}
-	function getAlbums() {
-		return fetch("https://jsonplaceholder.typicode.com/albums")
-			.then(response => {
-				if (!response.ok) {
-					throw Error(response.statusText);
-				}
-				return response.json();
-			})
-			.catch(err => console.error('ERROR :: fetchPeople', err));
+			.catch(err => ({ message: 'CATCH-ERROR', reason: err }));
 	}
 
 	function fetchButtonClickHandler() {
-		getUsers().then(res => {
+		fetchData(userURL).then(res => {
 			console.log(' fetchButtonClickHandler ::fetchSingleApi : users :', res);
 		});
 	}
 	function fetchAllButtonlickHandler() {
-		isAllPromiseSettled([fetchPeople(), getUsers(), getAlbums()]).then(results => {
+		isAllPromiseSettled([fetchData(peopleURL), fetchData(userURL), fetchData(albumURL), fetchData(errorURL)]).then(results => {
 			console.log('Final results : ', results);
 		});
 	}
@@ -54,14 +51,15 @@
 				return Promise.resolve(promise)
 					.then(result => {
 						results.push({
-							status: "SUCCESS",
-							value: result
+							fstatus: result.statusCode,
+							fdata: result,
+							fmessage: result.message
 						});
 					})
 					.catch(err => {
 						results.push({
-							status: "ERROR",
-							reason: err
+							fstatus: "ERROR",
+							fmessage: err
 						});
 					})
 					.finally(() => {
