@@ -51,15 +51,15 @@
 				return Promise.resolve(promise)
 					.then(result => {
 						results.push({
-							fstatus: result.statusCode,
-							fdata: result,
-							fmessage: result.message
+							status: result.statusCode,
+							data: result,
+							message: result.message
 						});
 					})
 					.catch(err => {
 						results.push({
-							fstatus: "ERROR",
-							fmessage: err
+							status: "ERROR",
+							message: err
 						});
 					})
 					.finally(() => {
