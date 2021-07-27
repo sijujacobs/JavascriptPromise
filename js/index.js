@@ -2,8 +2,10 @@
 	console.clear();
 	let fetchButton = document.getElementById('fetchButton');
 	let fetchAllButton = document.getElementById('fetchAllButton');
+	let allSettledButton = document.getElementById('allSettledButton');
 	fetchButton.addEventListener('click', fetchButtonClickHandler);
 	fetchAllButton.addEventListener('click', fetchAllButtonlickHandler);
+	allSettledButton.addEventListener('click', allSettledHandler);
 	const userURL = "https://jsonplaceholder.typicode.com/users";
 	const albumURL = "https://jsonplaceholder.typicode.com/albums";
 	const peopleURL = "https://ghibliapi.herokuapp.com/people";
@@ -41,6 +43,11 @@
 	function fetchAllButtonlickHandler() {
 		isAllPromiseSettled([fetchData(peopleURL), fetchData(userURL), fetchData(albumURL), fetchData(errorURL)]).then(results => {
 			console.log('Final results : ', results);
+		});
+	}
+	function allSettledHandler() {
+		Promise.allSettled([fetchData(peopleURL), fetchData(userURL), fetchData(albumURL), fetchData(errorURL)]).then(results => {
+			console.log('allSettledHandler Final results : ', results);
 		});
 	}
 
