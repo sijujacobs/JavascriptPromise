@@ -44,4 +44,45 @@
 			console.log('Success : second call with time ', waitTime, ' seconds');
 		}, waitTime)
 	}
+const myObj = {
+    name: 'siju',
+    age: '55',
+    address: {
+        street: '111 MyStreet',
+        city: 'MyCity',
+        dob: new Date(),
+    },
+    phone: '12345',
+    languages: ['javascript', 'actionscript'],
+    dob: null,
+    isVerified: false,
+    car: undefined,
+    model: null,
+};
+
+console.clear();
+console.log('cloned myObj : ', {...myObj});
+const propsToDelete = ['name','dob'];
+function findProp(mObject){
+    for(let obj in mObject){
+      if(propsToDelete.indexOf(obj) > -1){
+        mObject.hasOwnProperty(obj) && delete mObject[obj];
+      }
+      if(mObject[obj] && mObject[obj] !== null){
+        if(typeof mObject[obj] === 'object'){
+          if(Array.isArray(mObject[obj])){
+            const thisArray = mObject[obj];
+            for(let aIndex=0; aIndex < thisArray.length; aIndex++){
+              findProp(thisArray[aIndex]);
+            }
+          }else{
+            findProp(mObject[obj]);
+          }
+        }
+      }
+    }
+}
+
+findProp(myObj);
+console.log('myObj : ', myObj);
 })();
